@@ -11,6 +11,9 @@ function Navgation() {
           <Link href="/blog">文章</Link>
         </li>
         <li>
+          <Link href="/blog/category1">分類一</Link>
+        </li>
+        <li>
           <Link href="/about">關於我們</Link>
         </li>
       </ul>

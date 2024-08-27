@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import styles from './post.module.css';
+import { postPage } from '@/api/getPost';
 
 async function PostPage({ params }) {
   const singlePost = `
@@ -31,23 +32,27 @@ async function PostPage({ params }) {
 
   const data = await res.json();
 
-  const postData = data.data.post;
+  // const postData = data.data.post;
+
+  const postData = await postPage(params);
+
+  console.log(postData);
 
   return (
     <div>
-      {postData.featuredImage && (
+      {postData?.featuredImage && (
         <figure className={styles.post_figure}>
           <Image
             className={styles.post_img}
             fill
-            src={postData.featuredImage.node.sourceUrl}
-            alt={postData.featuredImage.node.altText}
+            src={postData?.featuredImage.node.sourceUrl}
+            alt={postData?.featuredImage.node.altText}
           />
         </figure>
       )}
-      <h1>{postData.title}</h1>
+      <h1>{postData?.title}</h1>
 
-      <div dangerouslySetInnerHTML={{ __html: postData.content }} />
+      <div dangerouslySetInnerHTML={{ __html: postData?.content }} />
     </div>
   );
 }
