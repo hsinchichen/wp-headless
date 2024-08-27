@@ -1,0 +1,12 @@
+.post_content > p {
+  word-wrap: break-word;
+}
+
+.post_figure {
+  height: 500px;
+}
+
+.post_img {
+  position: relative !important;
+  object-fit: cover;
+}
