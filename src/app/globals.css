@@ -17,11 +17,31 @@
 }
 
 body {
+  display: grid;
+  grid-template-areas:
+    'header header header'
+    'sidebar content content'
+    'footer footer footer';
   color: rgb(var(--foreground-rgb));
+}
+
+main {
+  grid-area: content;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    grid-template-areas:
+      'header '
+      'content'
+      'sidebar'
+      'footer ';
+    color: rgb(var(--foreground-rgb));
   }
 }

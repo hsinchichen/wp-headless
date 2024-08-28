@@ -58,6 +58,7 @@ async function fetchGraphQLData(query, variables = {}) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ query, variables }),
+      cache: 'no-store',
     });
 
     if (!res.ok) {
@@ -79,18 +80,24 @@ async function fetchGraphQLData(query, variables = {}) {
 
 export async function postPage(params) {
   const singlePost = `
-  query singlepost($id: ID = "") {
+    query singlepost($id: ID = "") {
       post(id: $id, idType: SLUG) {
-      title(format: RENDERED)
-      content(format: RENDERED)
-      featuredImage {
-        node {
-        sourceUrl
-        altText
+        title(format: RENDERED)
+        content(format: RENDERED)
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+        categories {
+          nodes {
+            slug
+          }
         }
       }
     }
-  }`;
+  `;
 
   const res = await fetch(process.env.WP_API_URL, {
     method: 'POST',
@@ -103,10 +110,10 @@ export async function postPage(params) {
         id: params.slug,
       },
     }),
+    cache: 'no-store',
   });
 
   const data = await res.json();
-
   const postData = data.data.post;
 
   return postData;

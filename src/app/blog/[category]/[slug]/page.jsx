@@ -1,42 +1,29 @@
 import Image from 'next/image';
 import styles from './post.module.css';
-import { postPage } from '@/api/getPost';
+import { postPage } from '@/data/getPost';
+import { notFound } from 'next/navigation';
 
-async function PostPage({ params }) {
-  const singlePost = `
-  query singlepost($id: ID = "") {
-    post(id: $id, idType: SLUG) {
-    title(format: RENDERED)
-    content(format: RENDERED)
-    featuredImage {
-      node {
-      sourceUrl
-      altText
-      }
-    }
-  }
-}`;
-
-  const res = await fetch(process.env.WP_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: singlePost,
-      variables: {
-        id: params.slug,
-      },
-    }),
-  });
-
-  const data = await res.json();
-
-  // const postData = data.data.post;
-
+export async function generateMetadata({ params }) {
   const postData = await postPage(params);
 
-  console.log(postData);
+  return {
+    title: postData?.title || 'Default Title',
+    description: postData?.excerpt || 'Default Description',
+  };
+}
+
+export default async function PostPage({ params }) {
+  const postData = await postPage(params);
+
+  const categorySlugs = postData.categories.nodes.map(
+    (category) => category.slug,
+  );
+
+  console.log(categorySlugs);
+
+  if (!categorySlugs.includes(params.category)) {
+    notFound(); 
+  }
 
   return (
     <div>
@@ -56,5 +43,3 @@ async function PostPage({ params }) {
     </div>
   );
 }
-
-export default PostPage;
